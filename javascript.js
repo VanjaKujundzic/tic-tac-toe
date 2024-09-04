@@ -13,13 +13,15 @@ function Gameboard() {
         
     }
     const getCell= (row, col) => board[row][col]; 
-    
     const printBoard = () => {
         const boardWithCellValues = board.map((row) => row.map((cell) => cell.getValue()))
         console.table(boardWithCellValues);
       };
 
+    const boardWithValues=()=> board.map((row) => row.map((cell) => cell.getValue()))
+
     return {
+        boardWithValues,
         printBoard,
         getCell
     };
@@ -39,36 +41,81 @@ function Cell() {
         playerChoice
     };      
 }
-function players(name, XorO) {
+function Players(name, XorO) {
     const player= {
         name:name,
-        value:XorO
+        value:XorO.toUpperCase()
     }
     return player
 
 }
-const player1=players("Vanja",'x');
-const player2=players("Denicija",'o');
 
-const gameboard= Gameboard();
+function playRound() {
 
-do{
-let row= prompt("choose row:","only 1");
-let column= prompt("choose column:","only 1");
-let cell= gameboard.getCell(row,column);
-let playerSelection= prompt("X or 0?:");
-playerSelection= playerSelection.toLocaleUpperCase();
+    const player1=Players("Vanja",'x');
+    const player2=Players("Denicija",'o');
+    let x=0;
 
-switch (playerSelection) {
-    case "X": cell.playerChoice(player1.value);
-        break;    
+    
+    do{
+        let row= prompt("choose row:","only 1");
+        let column= prompt("choose column:","only 1");
+        let cell= gameboard.getCell(row,column);
+        let playerSelection= prompt("X or 0?:");
+        playerSelection= playerSelection.toUpperCase();
+        
+        switch (playerSelection) {
+            case "X": cell.playerChoice(player1.value);
+                break;    
+                
+        
+            case "O": cell.playerChoice(player2.value);
+                break;
+        
+            default:alert("invalid input, try again");
+                break;
+        }
+        
         
 
-    case "O": cell.playerChoice(player2.value);
-        break;
+        //to see if the game is over
+        let firstArray = gameboard.boardWithValues()[0];
+        let secondArray = gameboard.boardWithValues()[1];
+        let thirdArray = gameboard.boardWithValues()[2];
+        const checkGameOver=GameOver(firstArray,secondArray,thirdArray);
+        
+        
 
-    default:alert("invalid input, try again");
-        break;
+        checkGameOver();
+        gameboard.printBoard();
+        x++;
+    }while(x<4)
+
 }
-gameboard.printBoard();
-}while(setInterval(5))
+const gameboard= Gameboard();
+
+//for the game checker 
+function GameOver(array1,array2,array3){
+    
+
+    const gameChecker=()=>{
+        
+        console.log(array1+array2+array3);
+
+        let gameChecker= array1.every(n=>n === "X");
+        let gameChecker2= array2.every(n=>n === "X");
+        let gameChecker3= array3.every(n=>n === "X");
+        if(gameChecker || gameChecker2 || gameChecker3){
+            alert("Game overrrr")
+            
+        }
+        else console.log("no winner yet");
+
+    }
+    return gameChecker
+}
+
+// const secondArray= array[1];
+// const thirdArray= array[2];
+
+playRound();
